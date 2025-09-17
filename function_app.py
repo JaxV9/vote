@@ -63,26 +63,19 @@ def postUser(req: func.HttpRequest, existingUser: func.DocumentList, outputDocum
             status_code=500
         )
 
-@app.cosmos_db_output(
-    arg_name="outputDocument",
-    connection="COSMOS_CONN_STRING",
-    database_name="votedb",
-    container_name="user",
-    create_if_not_exists=True
-)
+
 @app.cosmos_db_input(
     arg_name="existingUser",
     connection="COSMOS_CONN_STRING",
     database_name="votedb",
     container_name="user",
-    sql_query="SELECT c.id, c.pseudo, c.email FROM c WHERE c.id = {userId}"
+    sql_query="SELECT c.id, c.pseudo, c.email FROM c WHERE c.email = {email}"
 )
 @app.route(route="getUser", methods=["GET"], auth_level=func.AuthLevel.ANONYMOUS)
-def getUser(req: func.HttpRequest, existingUser: func.DocumentList, outputDocument: func.Out[func.Document]) -> func.HttpResponse:
+def getUser(req: func.HttpRequest, existingUser: func.DocumentList) -> func.HttpResponse:
 
     try:
         body = req.get_json()
-        userId = body.get("userID")
 
         if not existingUser:
             return func.HttpResponse(
