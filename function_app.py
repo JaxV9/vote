@@ -67,6 +67,48 @@ def postUser(req: func.HttpRequest, existingUser: func.DocumentList, outputDocum
     arg_name="outputDocument",
     connection="COSMOS_CONN_STRING",
     database_name="votedb",
+    container_name="user",
+    create_if_not_exists=True
+)
+@app.cosmos_db_input(
+    arg_name="existingUser",
+    connection="COSMOS_CONN_STRING",
+    database_name="votedb",
+    container_name="user",
+    sql_query="SELECT c.id, c.pseudo, c.email FROM c WHERE c.id = {userId}"
+)
+@app.route(route="getUser", methods=["GET"], auth_level=func.AuthLevel.ANONYMOUS)
+def getUser(req: func.HttpRequest, existingUser: func.DocumentList, outputDocument: func.Out[func.Document]) -> func.HttpResponse:
+
+    try:
+        body = req.get_json()
+        userId = body.get("userID")
+
+        if not existingUser:
+            return func.HttpResponse(
+                json.dumps({"error": "User not found"}),
+                mimetype="application/json",
+                status_code=404
+            )
+        
+        return func.HttpResponse(
+            json.dumps({"document": existingUser[0].to_dict()}),
+            mimetype="application/json",
+            status_code=200
+        )
+    
+    except Exception as e:
+        logging.error(f"Erreur lors de l’insertion : {e}")
+        return func.HttpResponse(
+            json.dumps({"error": str(e)}),
+            mimetype="application/json",
+            status_code=500
+        )
+
+@app.cosmos_db_output(
+    arg_name="outputDocument",
+    connection="COSMOS_CONN_STRING",
+    database_name="votedb",
     container_name="vote",
     create_if_not_exists=True
 )
@@ -143,8 +185,7 @@ def getVote(req: func.HttpRequest) -> func.HttpResponse:
              status_code=200
         )
 
-@app.route(route="getUser", methods=["GET"], auth_level=func.AuthLevel.ANONYMOUS)
-def getUser(req: func.HttpRequest) -> func.HttpResponse:
+
     logging.info('Python HTTP trigger function processed a request.')
 
     name = req.params.get('name')
