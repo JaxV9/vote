@@ -1,9 +1,9 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { HttpService } from '../http/http.service';
 import { ResAction } from '@jaslay/http';
 import { UserService } from '../user/user.service';
 
-interface Vote {
+export interface Vote {
   id: string;
   date: string;
   userId: string;
@@ -19,6 +19,9 @@ interface VotePayload {
 @Injectable()
 export class VoteService {
   votes = signal<Vote[]>([]);
+  votesList = computed(() => {
+    return this.votes().reverse();
+  });
 
   async loadVotes(): Promise<void> {
     const response: ResAction = await this.httpService.quickHttp.get(

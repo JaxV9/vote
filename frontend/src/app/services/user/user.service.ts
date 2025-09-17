@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { effect, Injectable, signal } from '@angular/core';
 import { HttpService } from '../http/http.service';
 import { ResAction } from '@jaslay/http';
 
@@ -11,7 +11,30 @@ interface User {
 @Injectable()
 export class UserService {
   currentUser = signal<User | undefined>(undefined);
-  constructor(private readonly httpService: HttpService) {}
+  constructor(private readonly httpService: HttpService) {
+    effect(
+      () => {
+        if (this.currentUser() !== undefined) {
+          localStorage.setItem(
+            'currentUser',
+            JSON.stringify(this.currentUser())
+          );
+        }
+        if (
+          this.currentUser() === undefined &&
+          localStorage.getItem('currentUser')
+        ) {
+          const savedUser = localStorage.getItem('currentUser');
+
+          if (savedUser) {
+            const user: User = JSON.parse(savedUser);
+            this.currentUser.set(user);
+          }
+        }
+      },
+      { allowSignalWrites: true }
+    );
+  }
 
   async createNewUser(pseudo: string, email: string): Promise<void> {
     const response: ResAction = await this.httpService.quickHttp.post(
@@ -41,6 +64,7 @@ export class UserService {
   }
 
   logout(): void {
+    localStorage.removeItem('currentUser');
     this.currentUser.set(undefined);
   }
 

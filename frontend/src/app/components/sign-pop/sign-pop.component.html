@@ -1,0 +1,31 @@
+@if (display()) {
+<section class="pop-up-container">
+  <div class="pop-up is-column">
+    @if (signUp()) {
+    <span class="title">Sign up</span>
+    <div class="is-column gap-8">
+      <label>Email</label>
+      <input #emailSignup type="text" />
+    </div>
+
+    <div class="is-column gap-8">
+      <label>Pseudo</label>
+      <input #pseudoSignup type="text" />
+    </div>
+
+    <button (click)="confirmSignUp(emailSignup.value, pseudoSignup.value)" type="submit">Submit</button>
+    <span (click)="toggleSignIn()" class="sign-toggle">Sign in</span>
+
+    } @else {
+    <span class="title">Sign in</span>
+    <div class="is-column gap-8">
+      <label>Email</label>
+      <input #emailSignin type="text" />
+    </div>
+    <button (click)="confirmSignIn(emailSignin.value)" type="submit">Submit</button>
+    <span (click)="toggleSignIn()" class="sign-toggle">Sign up</span>
+
+    }
+  </div>
+</section>
+}

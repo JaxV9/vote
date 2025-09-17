@@ -1,0 +1,23 @@
+:host {
+    .yes,
+    .no {
+        padding: 50px;
+        border-radius: 8px;
+        color: white;
+        cursor: pointer;
+        transition: all ease 0.2s;
+    }
+
+    .yes {
+        background-color: green;
+    }
+
+    .no {
+        background-color: red;
+    }
+
+    .yes:hover,
+    .no:hover {
+        scale: 1.2;
+    }
+}

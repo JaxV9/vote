@@ -1,54 +1,11 @@
-<div class="hello-container is-column gap-16">
-  <span class="hello">
-    Hey {{userService.currentUser()?.pseudo}} 👋
-  </span>
+<app-hello-user [display]="userIsLogin()" [pseudo]="userService.currentUser()?.pseudo">
   <button class="logout" (click)="userService.logout()">logout</button>
-</div>
+</app-hello-user>
 
-<div class="vote-container is-column">
-  <h2>Bayrou miss you ?</h2>
-  <div class="is-row gap-16">
-    <div class="yes" (click)="vote('Yes')">YES</div>
-    <div class="no" (click)="vote('No')">NO</div>
-  </div>
-</div>
+<app-vote>
+  <app-choice (click)="vote('Yes')" [choice]="'yes'" />
+  <app-choice (click)="vote('No')" [choice]="'no'" />
+</app-vote>
+<app-results [votes]="voteService.votesList()" />
 
-<h2>Results</h2>
-<ul>
-  @for (vote of voteService.votes().reverse(); track vote) {
-  <li>{{vote.pseudo}} voted {{vote.vote}}</li>
-  }
-</ul>
-
-
-@if (userIsLogin()) {
-<section class="pop-up-container">
-  <div class="pop-up is-column">
-    @if (signUp()) {
-    <span class="title">Sign up</span>
-    <div class="is-column gap-8">
-      <label>Email</label>
-      <input #emailSignup type="text" />
-    </div>
-
-    <div class="is-column gap-8">
-      <label>Pseudo</label>
-      <input #pseudoSignup type="text" />
-    </div>
-
-    <button (click)="confirmSignUp(emailSignup.value, pseudoSignup.value)" type="submit">Submit</button>
-    <span (click)="toggleSignIn()" class="sign-toggle">Sign in</span>
-
-    } @else {
-    <span class="title">Sign in</span>
-    <div class="is-column gap-8">
-      <label>Email</label>
-      <input #emailSignin type="text" />
-    </div>
-    <button (click)="confirmSignIn(emailSignin.value)" type="submit">Submit</button>
-    <span (click)="toggleSignIn()" class="sign-toggle">Sign up</span>
-
-    }
-  </div>
-</section>
-}
+<app-sign-pop [display]="!userIsLogin()" />
