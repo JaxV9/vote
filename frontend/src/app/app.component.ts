@@ -37,6 +37,10 @@ export class AppComponent implements OnInit {
     this.userService.login(email);
   }
 
+  vote(vote: string): void {
+    this.voteService.vote(vote);
+  }
+
   ngOnInit(): void {
     this.confirmSignIn('layanj.pro@gmail.com');
     this.voteService.loadVotes();
