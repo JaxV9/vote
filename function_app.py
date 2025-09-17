@@ -109,7 +109,7 @@ def getUser(req: func.HttpRequest, existingUser: func.DocumentList) -> func.Http
     arg_name="existingUser",
     connection="COSMOS_CONN_STRING",
     database_name="votedb",
-    container_name="user",
+    container_name="vote",
     sql_query="SELECT * FROM c WHERE c.id = {userId}"
 )
 @app.route(route="postVote", methods=["POST"], auth_level=func.AuthLevel.ANONYMOUS)
@@ -157,43 +157,29 @@ def postVote(req: func.HttpRequest, existingUser: func.DocumentList, outputDocum
             status_code=500
         )
 
+
+@app.cosmos_db_input(
+    arg_name="votesList",
+    connection="COSMOS_CONN_STRING",
+    database_name="votedb",
+    container_name="vote",
+    sql_query="SELECT c.id, c.date, c.userId, c.vote FROM c"
+)
 @app.route(route="getVote", methods=["GET"], auth_level=func.AuthLevel.ANONYMOUS)
-def getVote(req: func.HttpRequest) -> func.HttpResponse:
+def getVote(req: func.HttpRequest, votesList: func.DocumentList) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
-    name = req.params.get('name')
-    if not name:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            name = req_body.get('name')
-
-    if name:
-        return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
-    else:
+    try:
         return func.HttpResponse(
-             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
-             status_code=200
+            json.dumps({"documents": [doc.to_dict() for doc in votesList]}),
+            mimetype="application/json",
+            status_code=200
         )
-
-
-    logging.info('Python HTTP trigger function processed a request.')
-
-    name = req.params.get('name')
-    if not name:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            name = req_body.get('name')
-
-    if name:
-        return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
-    else:
+        
+    except Exception as e:
+        logging.error(f"Erreur lors de l’insertion : {e}")
         return func.HttpResponse(
-             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
-             status_code=200
+            json.dumps({"error": str(e)}),
+            mimetype="application/json",
+            status_code=500
         )
