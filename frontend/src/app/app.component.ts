@@ -38,6 +38,11 @@ export class AppComponent implements OnInit {
     this.voteService.vote(vote);
   }
 
+  logout(): void {
+    this.userService.logout();
+    this.voteService.hasAlreadyVoted.set(false);
+  }
+
   ngOnInit(): void {
     this.voteService.loadVotes();
   }

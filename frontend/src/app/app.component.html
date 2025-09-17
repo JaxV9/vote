@@ -1,5 +1,5 @@
 <app-hello-user [display]="userIsLogin()" [pseudo]="userService.currentUser()?.pseudo">
-  <button class="logout" (click)="userService.logout()">logout</button>
+  <button class="logout" (click)="logout()">logout</button>
 </app-hello-user>
 
 <app-vote>

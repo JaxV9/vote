@@ -1,4 +1,4 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, effect, Injectable, signal } from '@angular/core';
 import { HttpService } from '../http/http.service';
 import { ResAction } from '@jaslay/http';
 import { UserService } from '../user/user.service';
@@ -23,6 +23,8 @@ export class VoteService {
     return this.votes().reverse();
   });
 
+  hasAlreadyVoted = signal<boolean>(false);
+
   async loadVotes(): Promise<void> {
     const response: ResAction = await this.httpService.quickHttp.get(
       'api/votes/'
@@ -45,7 +47,9 @@ export class VoteService {
       'api/vote',
       payload
     );
-
+    if (response.status === 'Failure' && response.code === 403) {
+      this.hasAlreadyVoted.set(true);
+    }
     if (response.status === 'Success') {
       this.loadVotes();
     }

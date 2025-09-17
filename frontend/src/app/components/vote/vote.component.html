@@ -1,6 +1,11 @@
 <div class="vote-container is-column">
   <h2>Bayrou miss you ?</h2>
+
+  @if (voteService.hasAlreadyVoted()) {
+    <p>Nice try ! You already voted !</p>
+  } @else {
   <div class="is-row gap-16">
     <ng-content />
   </div>
+  }
 </div>

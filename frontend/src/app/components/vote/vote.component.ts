@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { Vote } from '../../services/vote/vote.service';
+import { Vote, VoteService } from '../../services/vote/vote.service';
 
 @Component({
   selector: 'app-vote',
@@ -10,4 +10,6 @@ import { Vote } from '../../services/vote/vote.service';
 })
 export class VoteComponent {
   votes = input<Vote[]>();
+
+  constructor(public readonly voteService: VoteService) {}
 }
