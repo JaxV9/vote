@@ -14,6 +14,66 @@ button {
 
 :host {
 
+    .hello-container {
+        position: absolute;
+    }
+
+    .hello {
+        font-family: 'Poppins', sans-serif;
+        font-size: 32px;
+        font-weight: 500;
+    }
+
+    .logout {
+        background-color: red;
+        width: 50%;
+    }
+
+    .logout:hover {
+        background-color: rgb(203, 0, 0);
+    }
+
+    .vote-container {
+        width: 70%;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        color: black;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .vote-container>div {
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 50px;
+    }
+
+    .vote-container>h2 {
+        font-size: 42px;
+    }
+
+    .yes,
+    .no {
+        padding: 50px;
+        border-radius: 8px;
+        color: white;
+        cursor: pointer;
+        transition: all ease 0.2s;
+    }
+
+    .yes {
+        background-color: green;
+    }
+
+    .no {
+        background-color: red;
+    }
+
+    .yes:hover,
+    .no:hover {
+        scale: 1.2;
+    }
+
     .pop-up-container {
         position: fixed;
         top: 0;
@@ -65,6 +125,10 @@ button {
         gap: 8px;
     }
 
+    .gap-16 {
+        gap: 16px;
+    }
+
     button {
         padding: 8px 16px;
         border-radius: 8px;
@@ -76,5 +140,9 @@ button {
 
     button:hover {
         background-color: green;
+    }
+
+    .sign-toggle {
+        cursor: pointer;
     }
 }

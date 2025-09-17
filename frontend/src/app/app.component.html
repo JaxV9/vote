@@ -1,3 +1,21 @@
+<!-- <section class="is-column"> -->
+  <div class="hello-container is-column gap-16">
+    <span class="hello">
+      Hey {{userService.currentUser()?.pseudo}} 👋
+      ​</span>
+    <button class="logout" (click)="userService.logout()">logout</button>
+  </div>
+
+  <div class="vote-container is-column">
+    <h2>Bayrou miss you ?</h2>
+    <div class="is-row gap-16">
+      <div class="yes">YES</div>
+      <div class="no">NO</div>
+    </div>
+  </div>
+<!-- </section> -->
+
+
 <h2>Results</h2>
 <ul>
   @for (vote of voteService.votes(); track vote) {
@@ -9,19 +27,31 @@
 @if (userIsLogin()) {
 <section class="pop-up-container">
   <div class="pop-up is-column">
+    @if (signUp()) {
     <span class="title">Sign up</span>
     <div class="is-column gap-8">
       <label>Email</label>
-      <input type="text" />
+      <input #emailSignup type="text" />
     </div>
 
     <div class="is-column gap-8">
       <label>Pseudo</label>
-      <input type="text" />
+      <input #pseudoSignup type="text" />
     </div>
 
-    <button type="submit">Submit</button>
+    <button (click)="confirmSignUp(emailSignup.value, pseudoSignup.value)" type="submit">Submit</button>
+    <span (click)="toggleSignIn()" class="sign-toggle">Sign in</span>
 
+    } @else {
+    <span class="title">Sign in</span>
+    <div class="is-column gap-8">
+      <label>Email</label>
+      <input #emailSignin type="text" />
+    </div>
+    <button (click)="confirmSignIn(emailSignin.value)" type="submit">Submit</button>
+    <span (click)="toggleSignIn()" class="sign-toggle">Sign up</span>
+
+    }
   </div>
 </section>
 }
