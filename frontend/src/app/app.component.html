@@ -1,0 +1,27 @@
+<h2>Results</h2>
+<ul>
+  @for (vote of voteService.votes(); track vote) {
+  <li>{{vote.pseudo}} voted {{vote.vote}}</li>
+  }
+</ul>
+
+
+@if (userIsLogin()) {
+<section class="pop-up-container">
+  <div class="pop-up is-column">
+    <span class="title">Sign up</span>
+    <div class="is-column gap-8">
+      <label>Email</label>
+      <input type="text" />
+    </div>
+
+    <div class="is-column gap-8">
+      <label>Pseudo</label>
+      <input type="text" />
+    </div>
+
+    <button type="submit">Submit</button>
+
+  </div>
+</section>
+}
