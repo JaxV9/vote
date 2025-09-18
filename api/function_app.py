@@ -1,8 +1,44 @@
 import azure.functions as func
 import datetime, json, logging, uuid
-
+import os
+from opencensus.ext.azure.log_exporter import AzureLogHandler
 
 app = func.FunctionApp()
+INSTRUMENTATION_KEY = os.environ.get("APPINSIGHTS_INSTRUMENTATIONKEY")
+logger = logging.getLogger("azure.functions")
+logger.setLevel(logging.INFO)
+if INSTRUMENTATION_KEY:
+    logger.addHandler(AzureLogHandler(
+        connection_string=f"InstrumentationKey={INSTRUMENTATION_KEY}"
+    ))
+
+def add_cors_headers(resp: func.HttpResponse) -> func.HttpResponse:
+    resp.headers["Access-Control-Allow-Origin"] = "https://ambitious-island-0034bc003.1.azurestaticapps.net"
+    resp.headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS"
+    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    return resp
+
+@app.route(route="/api/votes", methods=["GET", "POST", "OPTIONS"])
+def votes(req: func.HttpRequest) -> func.HttpResponse:
+    if req.method == "OPTIONS":
+        return add_cors_headers(func.HttpResponse(status_code=204))
+
+    if req.method == "POST":
+        try:
+            data = req.get_json()
+        except ValueError:
+            data = {}
+        logger.info(f"Vote reçu : {data}")
+        return add_cors_headers(func.HttpResponse(
+            json.dumps({"status": "ok", "received": data}),
+            mimetype="application/json"
+        ))
+
+    return add_cors_headers(func.HttpResponse(
+        json.dumps({"message": "Liste des votes"}),
+        mimetype="application/json"
+    ))
+
 
 @app.function_name(name="postUser")
 @app.route(route="user", methods=["POST"], auth_level=func.AuthLevel.ANONYMOUS)

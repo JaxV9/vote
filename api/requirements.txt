@@ -4,3 +4,4 @@ wheel==0.45.1
 azure-functions
 flask==2.3.3
 azure-cosmos
+opencensus-ext-azure
