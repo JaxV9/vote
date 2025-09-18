@@ -53,7 +53,7 @@ jobs:
 
       - name: Build frontend
         working-directory: ./frontend
-        run: npm run build -- --prod
+        run: npm run build
 
       - name: Deploy to Azure Static Web Apps
         uses: azure/static-web-apps-deploy@v1
