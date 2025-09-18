@@ -1,7 +1,6 @@
-# Uncomment to enable Azure Monitor OpenTelemetry
-# Ref: aka.ms/functions-azure-monitor-python 
-# azure-monitor-opentelemetry 
-
+packaging==24.2
+pywatchman==2.0.0
+wheel==0.45.1
 azure-functions
 flask==2.3.3
 azure-cosmos
