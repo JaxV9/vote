@@ -1,38 +1,43 @@
-name: CI - Vote app
+name: CI - Vote app #ci name
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main"] #triggered when we push on main
   pull_request:
-    branches: ["main"]
+    branches: ["main"] #triggered when we make a pull request targeting on main
 
 jobs:
   back-end-build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest #the os
     steps:
-      - name: Checkout code
+      - name: Checkout code #name of the step and we use checkout tool of Github
         uses: actions/checkout@v3
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - name: Setup Python #name of the step
+        uses: actions/setup-python@v4 #Github tool
         with:
-          python-version: "3.10"
+          python-version: "3.10" #python version
 
-      - name: Install dependencies
+      - name: Install dependencies 
         working-directory: ./api
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: tests
+        working-directory: ./api
+        run: |
+          python -m pytest test_function_app.py
+
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }} #we take the secret from github secrets
 
       - name: Deploy to Azure Functions
         uses: azure/functions-action@v1
         with:
-          app-name: ${{ secrets.FUNCTIONAPP_NAME }}
+          app-name: ${{ secrets.FUNCTIONAPP_NAME }} #we take the secret from github secrets
           package: '.'
 
   front-end-deploy:
@@ -55,7 +60,7 @@ jobs:
         working-directory: ./frontend
         run: npm run build
 
-      - name: Deploy to Azure Static Web Apps
+      - name: Deploy to Azure Static Web Apps #deployment of Angular app on Azure Static Web apps
         uses: azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
